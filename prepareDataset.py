@@ -168,54 +168,28 @@ from music21 import volume
 import mido
 
 dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full"
-output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename.txt"
+output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filenameM21.txt"
 
 
 def prepare_data():
+    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta",]
+    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
+                          "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
+                          "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
+                          "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto",]
+
     for midi_file_path in Path(dir_path).glob('**/*.mid'):
 
         # Some MIDI files will raise Exceptions on loading, if they are invalid.
         # We just skip those.
         try:
-            pm = pretty_midi.PrettyMIDI(str(midi_file_path))
-
+            song = converter.parse(str(midi_file_path))
             # Extract MIDI file with two instruments where one is piano
-            if (len(pm.instruments) == 2) \
-                    and (pm.instruments[0] or pm.instruments[1] in pretty_midi.INSTRUMENT_CLASSES[0]) \
-                    and (pm.instruments[0] or pm.instruments[1] in pretty_midi.INSTRUMENT_CLASSES[5]):
-
-                song = converter.parse(str(midi_file_path))
-                components = []
-                for element in song.recurse():
-                    components.append(element)
-
-                    for component in components:
-                        if type(component) == instrument.Piano \
-                                or type(component) == instrument.Harpsichord \
-                                or type(component) == instrument.Clavichord \
-                                or type(component) == instrument.Celesta:
-
-                            for component1 in components:
-                                if type(component1) == instrument.Violin \
-                                        or type(component1) == instrument.Viola \
-                                        or type(component1) == instrument.Violoncello \
-                                        or type(component1) == instrument.Contrabass \
-                                        or type(component1) == instrument.Harp \
-                                        or type(component1) == instrument.Guitar \
-                                        or type(component1) == instrument.AcousticGuitar \
-                                        or type(component1) == instrument.ElectricGuitar \
-                                        or type(component1) == instrument.AcousticBass \
-                                        or type(component1) == instrument.ElectricBass \
-                                        or type(component1) == instrument.FretlessBass \
-                                        or type(component1) == instrument.Mandolin \
-                                        or type(component1) == instrument.Ukulele \
-                                        or type(component1) == instrument.ElectricGuitar \
-                                        or type(component1) == instrument.Banjo \
-                                        or type(component1) == instrument.Lute \
-                                        or type(component1) == instrument.Sitar \
-                                        or type(component1) == instrument.Shamisen \
-                                        or type(component1) == instrument.Koto:
-
+            parts = instrument.partitionByInstrument(song)
+            if parts:
+                if len(parts) == 2:
+                    if (parts.parts[0].id in keyboard_instruments and parts.parts[1].id in string_instruments) or \
+                            (parts.parts[1].id in keyboard_instruments and parts.parts[0].id in string_instruments):
                                     print(midi_file_path)
                                     text_file = open(str(output_file_path), "a+")
                                     text_file.write(str(midi_file_path) + "\n")
@@ -226,18 +200,4 @@ def prepare_data():
             pass
 
 
-def output_file_sanity_check():
-    sanitized_output_file_path = str(output_file_path) + "_sanitized.txt"
-    input_file_path = str(output_file_path)
-    completed_lines_hash = set()
-    sanitized_output_file = open(sanitized_output_file_path, "w")
-    for line in open(input_file_path, "r"):
-        hashValue = hashlib.md5(line.rstrip().encode('utf-8')).hexdigest()
-        if hashValue not in completed_lines_hash:
-            sanitized_output_file.write(line)
-            completed_lines_hash.add(hashValue)
-    sanitized_output_file.close()
-
-
 prepare_data()
-output_file_sanity_check()
