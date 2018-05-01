@@ -14,10 +14,24 @@ from keras.callbacks import ModelCheckpoint
 
 def train_network():
     """ Train a Neural Network to generate music """
-    notes = get_notes()
+
+    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
+    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
+                          "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
+                          "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
+                          "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
+
+    piano_notes = get_notes(keyboard_instruments)
+    string_notes = get_notes(string_instruments)
+
+    with open('data/piano_notes', 'wb') as filepath:
+        pickle.dump(piano_notes, filepath)
+    with open('data/string_notes', 'wb') as filepath:
+        pickle.dump(string_notes, filepath)
 
     # get amount of pitch names
-    n_vocab = len(set(notes))
+    n_vocab_piano = len(set(piano_notes))
+    n_vocab_string = len(set(string_notes))
 
     network_input, network_output = prepare_sequences(notes, n_vocab)
 
@@ -25,47 +39,29 @@ def train_network():
 
     train(model, network_input, network_output)
 
-def get_notes():
-    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
-    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
-                          "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
-                          "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
-                          "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
+
+def get_notes(music_instrument):
 
     """ Get all the notes and chords from the midi files in the ./midi_songs directory """
-    piano_notes = []
-    string_notes = []
+    notes = []
 
     for file in glob.glob("midi_songs/*.mid"):
         midi = converter.parse(file)
 
-        piano_notes_to_parse = None
-        string_notes_to_parse = None
+        notes_to_parse = None
 
         parts = instrument.partitionByInstrument(midi)
 
-        for music_instrument in range(len(parts)):
-            if parts.parts[music_instrument].id in keyboard_instruments:
-                piano_notes_to_parse = parts.parts[music_instrument]
-            if parts.parts[music_instrument].id in string_instruments:
-                string_notes_to_parse = parts.parts[music_instrument]
+        if parts.parts[0].id in music_instrument:
+            notes_to_parse = parts.parts[0]
+        else:
+            notes_to_parse = parts.parts[1]
 
-        for element in piano_notes_to_parse:
+        for element in notes_to_parse:
             if isinstance(element, note.Note):
-                piano_notes.append(str(element.pitch))
+                notes.append(str(element.pitch))
             elif isinstance(element, chord.Chord):
-                piano_notes.append('.'.join(str(n) for n in element.normalOrder))
-
-        for element in string_notes_to_parse:
-            if isinstance(element, note.Note):
-                string_notes.append(str(element.pitch))
-            elif isinstance(element, chord.Chord):
-                string_notes.append('.'.join(str(n) for n in element.normalOrder))
-
-    with open('data/piano_notes', 'wb') as filepath:
-        pickle.dump(piano_notes, filepath)
-    with open('data/string_notes', 'wb') as filepath:
-        pickle.dump(string_notes, filepath)
+                notes.append('.'.join(str(n) for n in element.normalOrder))
 
     return notes
 
