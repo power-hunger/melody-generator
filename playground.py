@@ -1,5 +1,7 @@
 import hashlib
 
+import numpy
+from keras.utils import np_utils
 from music21 import *
 from music21 import converter, instrument, note, chord
 
@@ -166,23 +168,44 @@ def main():
                           "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
 
-    midi = converter.parse("/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/9/9faf098947015f0ab65d4f87b9b6d41d.mid")
-    # song.show("text")
+    piano_notes, string_notes = get_notes()
+    print("piano_notes")
+    print(piano_notes)
+    print(len(piano_notes))
+    print("string_notes")
+    print(string_notes)
+    print(len(string_notes))
 
+    # get amount of pitch names
+    n_vocab = len(set(piano_notes))
+    print("n_vocab")
+    print(set(piano_notes))
+
+    network_input, network_output = prepare_sequences(piano_notes, n_vocab)
+
+
+def get_notes():
+    """ Get all the notes and chords from the midi files in the ./midi_songs directory """
+    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
+    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
+                          "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
+                          "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
+                          "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
     piano_notes = []
     string_notes = []
 
-    # notes_to_parse = None
-    piano_notes_to_parse = None
-    string_notes_to_parse = None
+    midi = converter.parse(
+        "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/7/7c5e7f395696f30f97b9091326882af6.mid")
 
+    string_notes_to_parse = None
+    piano_notes_to_parse = None
     parts = instrument.partitionByInstrument(midi)
 
     for music_instrument in range(len(parts)):
         if parts.parts[music_instrument].id in keyboard_instruments:
-            piano_notes_to_parse = parts.parts[music_instrument]
+            piano_notes_to_parse = parts.parts[music_instrument].recurse()
         if parts.parts[music_instrument].id in string_instruments:
-            string_notes_to_parse = parts.parts[music_instrument]
+            string_notes_to_parse = parts.parts[music_instrument].recurse()
 
     for element in piano_notes_to_parse:
         if isinstance(element, note.Note):
@@ -196,15 +219,51 @@ def main():
         elif isinstance(element, chord.Chord):
             string_notes.append('.'.join(str(n) for n in element.normalOrder))
 
+    return piano_notes, string_notes
 
-    print("piano_notes_to_parse")
-    print(piano_notes_to_parse)
-    print("piano_notes")
-    print(piano_notes)
-    print("string_notes_to_parse")
-    print(string_notes_to_parse)
-    print("string notes")
-    print(string_notes)
 
+def prepare_sequences(notes, n_vocab):
+    """ Prepare the sequences used by the Neural Network """
+    sequence_length = 100
+
+    # get all pitch names
+    pitchnames = sorted(set(item for item in notes))
+
+     # create a dictionary to map pitches to integers
+    note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
+    print("note_to_int")
+    print(note_to_int)
+
+
+    network_input = []
+    network_output = []
+
+    # create input sequences and the corresponding outputs
+    for i in range(0, len(notes) - sequence_length, 1):
+        sequence_in = notes[i:i + sequence_length]
+        sequence_out = notes[i + sequence_length]
+        network_input.append([note_to_int[char] for char in sequence_in])
+        network_output.append(note_to_int[sequence_out])
+
+    print("network_output")
+    print(len(network_output))
+    n_patterns = len(network_input)
+    print("n_patterns")
+    print(n_patterns)
+
+    # reshape the input into a format compatible with LSTM layers
+    network_input = numpy.reshape(network_input, (n_patterns, sequence_length, 1))
+    print("network_input")
+    print(network_input.shape)
+
+
+
+    # normalize input
+    network_input = network_input / float(n_vocab)
+
+    network_output = np_utils.to_categorical(network_output)
+
+    return (1, 2)
+    # return (network_input, network_output)
 
 main()
