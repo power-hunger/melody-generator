@@ -38,6 +38,12 @@ def prepare_sequences(notes, pitchnames, n_vocab):
         sequence_out = notes[i + sequence_length]
         network_input.append([note_to_int[char] for char in sequence_in])
         output.append(note_to_int[sequence_out])
+    # create input sequences and the corresponding outputs
+    for i in range(0, len(notes) - sequence_length, 1):
+        sequence_in = notes[i:i + sequence_length]
+        sequence_out = notes[i + sequence_length]
+        network_input.append([note_to_int[char] for char in sequence_in])
+        network_output.append(note_to_int[sequence_out])
 
     n_patterns = len(network_input)
 

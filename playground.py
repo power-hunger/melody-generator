@@ -160,6 +160,9 @@ from music21.vexflow import toMusic21j
 from music21 import voiceLeading
 from music21 import volpiano
 from music21 import volume
+import matplotlib as mpl
+mpl.use('TkAgg')
+
 
 def main():
     keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
@@ -167,6 +170,11 @@ def main():
                           "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
                           "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
+
+    # midi = converter.parse("/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/7/7c5e7f395696f30f97b9091326882af6.mid")
+    midi = converter.parse("/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/9/9faf098947015f0ab65d4f87b9b6d41d.mid")
+
+
 
     piano_notes, string_notes = get_notes()
     print("piano_notes")
@@ -176,12 +184,44 @@ def main():
     print(string_notes)
     print(len(string_notes))
 
-    # get amount of pitch names
-    n_vocab = len(set(piano_notes))
-    print("n_vocab")
-    print(set(piano_notes))
+    parts = instrument.partitionByInstrument(midi)
 
-    network_input, network_output = prepare_sequences(piano_notes, n_vocab)
+    notes0 = []
+    notes1 = []
+    counter = 0
+    counter2 = 0
+    print("loh")
+    for thing in parts.parts[0]:
+        # counter = counter + 1
+        # if counter > 4:
+        #     print(thing, thing.quarterLength, thing.offset)
+            notes0.append(thing)
+
+    print("loh")
+    for thing in parts.parts[1]:
+        # counter2 = counter2 + 1
+        # if counter2 > 4:
+        #     print(thing, thing.quarterLength, thing.offset)
+            notes1.append(thing)
+
+
+    print("len(notes0)")
+    print(len(notes0))
+    print("len(notes1)")
+    print(len(notes1))
+
+    for x in range(100):
+        print("0 " + str(notes0[x]), str(notes0[x].offset))
+        print("1 " + str(notes1[x]), str(notes1[x].offset))
+
+    oiter = stream.iterator.OffsetIterator(parts[0])
+    for groupedElements in oiter:
+        if len(groupedElements) >= 2:
+            print(groupedElements, groupedElements[0].offset, groupedElements[1].offset)
+        else:
+            print(groupedElements, groupedElements[0].offset)
+
+
 
 
 def get_notes():
@@ -203,9 +243,9 @@ def get_notes():
 
     for music_instrument in range(len(parts)):
         if parts.parts[music_instrument].id in keyboard_instruments:
-            piano_notes_to_parse = parts.parts[music_instrument].recurse()
+            piano_notes_to_parse = parts.parts[music_instrument]
         if parts.parts[music_instrument].id in string_instruments:
-            string_notes_to_parse = parts.parts[music_instrument].recurse()
+            string_notes_to_parse = parts.parts[music_instrument]
 
     for element in piano_notes_to_parse:
         if isinstance(element, note.Note):
