@@ -167,8 +167,8 @@ from music21 import volume
 
 import mido
 
-dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full"
-output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filenameM21.txt"
+dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/references/MuseData"
+output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_MuseData.txt"
 
 
 def prepare_data():
@@ -179,7 +179,6 @@ def prepare_data():
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto",]
 
     for midi_file_path in Path(dir_path).glob('**/*.mid'):
-
         # Some MIDI files will raise Exceptions on loading, if they are invalid.
         # We just skip those.
         try:
@@ -197,6 +196,7 @@ def prepare_data():
 
         # Silently ignore exceptions for a clean presentation (sorry Python!)
         except Exception as e:
+            print("Exception ", e)
             pass
 
 

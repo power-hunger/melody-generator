@@ -162,57 +162,47 @@ from music21 import volpiano
 from music21 import volume
 import matplotlib as mpl
 mpl.use('TkAgg')
+import os
+from pathlib import Path
 
-
-def main():
-    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
-    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
+KEYBOARD_INSTRUMENTS = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
+STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
                           "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
                           "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
+MIDI_DIR_PATH = '/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/delete_me.txt'
 
 
-    piano_notes, string_notes = get_notes()
-    print("piano_notes")
-    print(piano_notes)
-    print(len(piano_notes))
-    print("string_notes")
-    print(string_notes)
-    print(len(string_notes))
-
-    piano_notes1 = get_notes_chords_rests(keyboard_instruments)
-    string_notes1 = get_notes_chords_rests(string_instruments)
-
-    print("piano_notes")
-    print(piano_notes1)
-    print(len(piano_notes1))
-    create_midi(piano_notes1)
-    print("string_notes")
-    print(string_notes1)
-    print(len(string_notes1))
-    # create_midi(string_notes1)
+def main():
+    piano_notes1 = get_notes_chords_rests(KEYBOARD_INSTRUMENTS)
+    string_notes1 = get_notes_chords_rests(STRING_INSTRUMENTS)
+    print(len(piano_notes1), len(string_notes1))
 
 
 def get_notes_chords_rests(instrument_type):
     """ Get all the notes, chords and rests from the midi files in the ./midi_songs directory """
-    # midi = converter.parse("/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/7/7c5e7f395696f30f97b9091326882af6.mid")
-    midi = converter.parse("/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/9/9faf098947015f0ab65d4f87b9b6d41d.mid")
-    parts = instrument.partitionByInstrument(midi)
     note_list = []
-
-    for music_instrument in range(len(parts)):
-        if parts.parts[music_instrument].id in instrument_type:
-            for element_by_offset in stream.iterator.OffsetIterator(parts[music_instrument]):
-                for entry in element_by_offset:
-                    if isinstance(entry, note.Note):
-                        check_rest_amount(entry, note_list)
-                        note_list.append(str(entry.pitch))
-                    elif isinstance(entry, chord.Chord):
-                        check_rest_amount(entry, note_list)
-                        note_list.append('.'.join(str(n) for n in entry.normalOrder))
-                    elif isinstance(entry, note.Rest):
-                        check_rest_amount(entry, note_list)
-                        note_list.append('Rest')
+    with open(MIDI_DIR_PATH) as f:
+        for line in f:
+            try:
+                midi_file = converter.parse(line.rstrip())
+                parts = instrument.partitionByInstrument(midi_file)
+                for music_instrument in range(len(parts)):
+                    if parts.parts[music_instrument].id in instrument_type:
+                        for element_by_offset in stream.iterator.OffsetIterator(parts[music_instrument]):
+                            for entry in element_by_offset:
+                                if isinstance(entry, note.Note):
+                                    check_rest_amount(entry, note_list)
+                                    note_list.append(str(entry.pitch))
+                                elif isinstance(entry, chord.Chord):
+                                    check_rest_amount(entry, note_list)
+                                    note_list.append('.'.join(str(n) for n in entry.normalOrder))
+                                elif isinstance(entry, note.Rest):
+                                    check_rest_amount(entry, note_list)
+                                    note_list.append('Rest')
+            except Exception as e:
+                print("failed on ", line.rstrip(), e)
+                pass
     return note_list
 
 
@@ -227,7 +217,7 @@ def check_rest_amount(element, note_list):
                 return
 
 
-def create_midi(prediction_output):
+def create_midi(prediction_output, string):
     """ convert the output from the prediction to notes and create a midi file
         from the notes """
     offset = 0
@@ -262,48 +252,10 @@ def create_midi(prediction_output):
         offset += 0.5
 
     midi_stream = stream.Stream(output_notes)
-
-    midi_stream.write('midi', fp='/Users/konradsbuss/Desktop/tmp/test_output.mid')
-
-
-def get_notes():
-    """ Get all the notes and chords from the midi files in the ./midi_songs directory """
-    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
-    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
-                          "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
-                          "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
-                          "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
-    piano_notes = []
-    string_notes = []
-
-    midi = converter.parse(
-        "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/9/9faf098947015f0ab65d4f87b9b6d41d.mid")
-
-    string_notes_to_parse = None
-    piano_notes_to_parse = None
-    parts = instrument.partitionByInstrument(midi)
-
-    for music_instrument in range(len(parts)):
-        if parts.parts[music_instrument].id in keyboard_instruments:
-            piano_notes_to_parse = parts.parts[music_instrument]
-        if parts.parts[music_instrument].id in string_instruments:
-            string_notes_to_parse = parts.parts[music_instrument]
-
-    for element in piano_notes_to_parse:
-        if isinstance(element, note.Note):
-            piano_notes.append(str(element.pitch))
-        elif isinstance(element, chord.Chord):
-            piano_notes.append('.'.join(str(n) for n in element.normalOrder))
-        # elif isinstance(element, note.Rest):
-        #     piano_notes.append('Rest')
-
-    for element in string_notes_to_parse:
-        if isinstance(element, note.Note):
-            string_notes.append(str(element.pitch))
-        elif isinstance(element, chord.Chord):
-            string_notes.append('.'.join(str(n) for n in element.normalOrder))
-
-    return piano_notes, string_notes
+    if string == "string":
+        midi_stream.write('midi', fp='/Users/konradsbuss/Desktop/tmp/test_output_string.mid')
+    else:
+        midi_stream.write('midi', fp='/Users/konradsbuss/Desktop/tmp/test_output_piano.mid')
 
 
 def prepare_sequences(notes, n_vocab):
@@ -349,5 +301,6 @@ def prepare_sequences(notes, n_vocab):
 
     return (1, 2)
     # return (network_input, network_output)
+
 
 main()
