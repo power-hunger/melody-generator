@@ -169,6 +169,7 @@ import mido
 
 dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/references/MuseData"
 output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_MuseData.txt"
+output_file_path_same_note_length = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_MuseData.txt"
 
 
 def prepare_data():
@@ -194,10 +195,51 @@ def prepare_data():
                                     text_file.write(str(midi_file_path) + "\n")
                                     text_file.close()
 
-        # Silently ignore exceptions for a clean presentation (sorry Python!)
+                                    keyboard_notes = get_notes_chords_rests(keyboard_instruments, midi_file_path)
+                                    string_notes = get_notes_chords_rests(string_instruments, midi_file_path)
+
+                                    if len(keyboard_notes) == len(string_notes):
+                                        text_file = open(str(output_file_path_same_note_length), "a+")
+                                        text_file.write(str(midi_file_path) + "\n")
+                                        text_file.close()
         except Exception as e:
             print("Exception ", e)
             pass
 
+
+def get_notes_chords_rests(instrument_type, path):
+    """ Get all the notes, chords and rests from the midi files in the ./midi_songs directory """
+    note_list = []
+    try:
+        midi_file = converter.parse(path)
+        parts = instrument.partitionByInstrument(midi_file)
+        for music_instrument in range(len(parts)):
+            if parts.parts[music_instrument].id in instrument_type:
+                for element_by_offset in stream.iterator.OffsetIterator(parts[music_instrument]):
+                    for entry in element_by_offset:
+                        if isinstance(entry, note.Note):
+                            check_rest_amount(entry, note_list)
+                            note_list.append(str(entry.pitch))
+                        elif isinstance(entry, chord.Chord):
+                            check_rest_amount(entry, note_list)
+                            note_list.append('.'.join(str(n) for n in entry.normalOrder))
+                        elif isinstance(entry, note.Rest):
+                            check_rest_amount(entry, note_list)
+                            note_list.append('Rest')
+    except Exception as e:
+        print("failed on ", path, e)
+        pass
+    return note_list
+
+
+def check_rest_amount(element, note_list):
+    """Check if there is not missing rests which ensures silent part in melody"""
+    if element.offset / 0.5 <= len(note_list):
+        return
+    else:
+        while True:
+            note_list.append('Rest')
+            if element.offset / 0.5 <= len(note_list):
+                return
 
 prepare_data()
