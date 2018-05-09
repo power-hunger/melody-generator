@@ -160,10 +160,12 @@ from music21.vexflow import toMusic21j
 from music21 import voiceLeading
 from music21 import volpiano
 from music21 import volume
-import matplotlib as mpl
-mpl.use('TkAgg')
 import os
 from pathlib import Path
+import matplotlib as mpl
+mpl.use('TkAgg')
+
+
 
 KEYBOARD_INSTRUMENTS = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
 STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
