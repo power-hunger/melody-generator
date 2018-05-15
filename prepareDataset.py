@@ -164,69 +164,62 @@ from music21 import voiceLeading
 from music21 import volpiano
 from music21 import volume
 import mido
-
-dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/1"
-output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_full.txt"
-output_file_path_same_note_length7 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_7.txt"
-output_file_path_same_note_length6 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_6.txt"
-output_file_path_same_note_length5 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_5.txt"
-output_file_path_same_note_length4 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_4.txt"
-output_file_path_same_note_length3 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_3.txt"
-output_file_path_same_note_length2 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_2.txt"
-output_file_path_same_note_length1 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_1.txt"
-output_file_path_same_note_length0 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_0.txt"
+import csv
 
 
-def prepare_data():
-    keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta",]
-    string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
+keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta",]
+string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
                           "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
                           "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto",]
 
+dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/e"
+output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_full.txt"
+output_file_path_same_note_length01 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_01.txt"
+output_file_path_same_note_length005 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_005.txt"
+output_file_path_same_note_exception = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_exception.txt"
+output_file_path_percentage = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_percentage.txt"
+output_file_path_csv = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_csv.csv"
+
+
+def prepare_data():
+    init_csv_file(output_file_path_csv)
+    path_list = []
     for midi_file_path in Path(dir_path).glob('**/*.mid'):
+        path_list.append(midi_file_path)
+    common.runParallel(path_list, check_instruments_and_save_notes)
+
+
+def check_instruments_and_save_notes(midi_file_path):
+    try:
         # Some MIDI files will raise Exceptions on loading, if they are invalid.
         # We just skip those.
-    # with open("/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filenameLINUX2.txt") as f:
-    #     for line in f:
-    #         midi_file_path = line.rstrip()
-    #         midi_file_path = midi_file_path.replace("/home/konrads/Documents/bakalaurs/", "/Users/konradsbuss/Documents/Uni/bak/dataset/")
-            try:
-                song = converter.parse(midi_file_path)
-                # Extract MIDI file with two instruments where one is piano
-                parts = instrument.partitionByInstrument(song)
-                if parts:
-                    if len(parts) == 2:
-                        if (parts.parts[0].id in keyboard_instruments and parts.parts[1].id in string_instruments) or \
-                                (parts.parts[1].id in keyboard_instruments and parts.parts[0].id in string_instruments):
-                                        print(midi_file_path)
-                                        write_to_file(output_file_path, str(midi_file_path))
+        song = converter.parse(midi_file_path)
+        # Extract MIDI file with two instruments where one is piano
+        parts = instrument.partitionByInstrument(song)
+        if parts:
+            if len(parts) == 2:
+                if (parts.parts[0].id in keyboard_instruments and parts.parts[1].id in string_instruments) or \
+                        (parts.parts[1].id in keyboard_instruments and parts.parts[0].id in string_instruments):
+                    print(midi_file_path)
+                    write_to_file(output_file_path, str(midi_file_path))
 
-                                        keyboard_notes = get_notes_chords_rests(keyboard_instruments, midi_file_path)
-                                        string_notes = get_notes_chords_rests(string_instruments, midi_file_path)
-                                        print(len(keyboard_notes), len(string_notes))
-                                        notes_max = max(len(keyboard_notes), len(string_notes))
-                                        notes_min = min(len(keyboard_notes), len(string_notes))
-                                        if notes_max-(notes_max*0.07) <= notes_min:
-                                            write_to_file(output_file_path_same_note_length7, str(midi_file_path))
-                                            if notes_max-(notes_max*0.06) <= notes_min:
-                                                write_to_file(output_file_path_same_note_length6, str(midi_file_path))
-                                                if notes_max - (notes_max * 0.05) <= notes_min:
-                                                    write_to_file(output_file_path_same_note_length5, str(midi_file_path))
-                                                    if notes_max - (notes_max * 0.04) <= notes_min:
-                                                        write_to_file(output_file_path_same_note_length4, str(midi_file_path))
-                                                        if notes_max - (notes_max * 0.03) <= notes_min:
-                                                            write_to_file(output_file_path_same_note_length3, str(midi_file_path))
-                                                            if notes_max - (notes_max * 0.02) <= notes_min:
-                                                                write_to_file(output_file_path_same_note_length2, str(midi_file_path))
-                                                                if notes_max - (notes_max * 0.01) <= notes_min:
-                                                                    write_to_file(output_file_path_same_note_length1, str(midi_file_path))
-                                                                    if notes_max == notes_min:
-                                                                        write_to_file(output_file_path_same_note_length0, str(midi_file_path))
+                    keyboard_notes = get_notes_chords_rests(keyboard_instruments, midi_file_path)
+                    string_notes = get_notes_chords_rests(string_instruments, midi_file_path)
+                    print(len(keyboard_notes), len(string_notes))
+                    notes_max = max(len(keyboard_notes), len(string_notes))
+                    notes_min = min(len(keyboard_notes), len(string_notes))
+                    percentage = (notes_max - notes_min) / notes_max
 
-            except Exception as e:
-                print("Exception ", midi_file_path,  e)
-                pass
+                    write_to_csv(output_file_path_csv, percentage, len(keyboard_notes), len(string_notes), str(midi_file_path))
+
+                    if notes_max - (notes_max * 0.1) <= notes_min:
+                        write_to_file(output_file_path_same_note_length01, str(midi_file_path))
+
+    except Exception as e:
+        print("Exception ", midi_file_path, e)
+        write_to_file(output_file_path_same_note_exception, str(midi_file_path))
+        pass
 
 
 def get_notes_chords_rests(instrument_type, path):
@@ -265,10 +258,24 @@ def check_rest_amount(element, note_list):
                 return
 
 
-def write_to_file(file_path, what_to_writ):
+def write_to_file(file_path, what_to_write):
     text_file = open(str(file_path), "a+")
-    text_file.write(str(what_to_writ) + "\n")
+    text_file.write(str(what_to_write) + "\n")
     text_file.close()
+
+
+def write_to_csv(csv_file_path, percentage, note_p, note_s, midi_file_path):
+    with open(str(csv_file_path), 'a+', newline='') as csvfile:
+        fieldnames = ['Percentage', 'Note_P', 'Note_S', 'Path']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writerow({'Percentage': str(percentage), 'Note_P': str(note_p), 'Note_S': str(note_s), 'Path': str(midi_file_path)})
+
+
+def init_csv_file(csv_file_path):
+    with open(str(csv_file_path), 'a+', newline='') as csvfile:
+        fieldnames = ['Percentage', 'Note_P', 'Note_S', 'Path']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
 
 prepare_data()
