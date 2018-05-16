@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="67409d12-0ac3-4e23-b425-5bb735b352b3" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/prepareDataset.py" afterPath="$PROJECT_DIR$/prepareDataset.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -46,15 +47,15 @@
       <file leaf-file-name="prepareDataset.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prepareDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="751">
-              <caret line="279" column="0" lean-forward="true" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
+            <state relative-caret-position="1095">
+              <caret line="279" column="18" lean-forward="false" selection-start-line="279" selection-start-column="18" selection-end-line="279" selection-end-column="18" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
-                <element signature="e#8831#9996#0" expanded="false" />
-                <element signature="e#10046#10330#0" expanded="false" />
-                <element signature="e#10382#10489#0" expanded="false" />
-                <element signature="e#10573#10892#0" expanded="false" />
-                <element signature="e#10933#11149#0" expanded="false" />
+                <element signature="e#8547#9712#0" expanded="false" />
+                <element signature="e#9762#10046#0" expanded="false" />
+                <element signature="e#10098#10205#0" expanded="false" />
+                <element signature="e#10289#10608#0" expanded="false" />
+                <element signature="e#10649#10865#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -314,7 +315,14 @@
       <option name="project" value="LOCAL" />
       <updated>1526419884969</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="midi file parsing added main func">
+      <created>1526462416939</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1526462416939</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -378,7 +386,8 @@
     <MESSAGE value="prepareDataset cleanup" />
     <MESSAGE value="prepareDataset added percentage" />
     <MESSAGE value="midi file parsing made parallel" />
-    <option name="LAST_COMMIT_MESSAGE" value="midi file parsing made parallel" />
+    <MESSAGE value="midi file parsing added main func" />
+    <option name="LAST_COMMIT_MESSAGE" value="midi file parsing added main func" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -417,11 +426,11 @@
           <caret line="208" column="0" lean-forward="true" selection-start-line="208" selection-start-column="0" selection-end-line="208" selection-end-column="0" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#8831#9996#0" expanded="false" />
-            <element signature="e#10046#10330#0" expanded="false" />
-            <element signature="e#10382#10489#0" expanded="false" />
-            <element signature="e#10573#10892#0" expanded="false" />
-            <element signature="e#10933#11149#0" expanded="false" />
+            <element signature="e#8547#9712#0" expanded="false" />
+            <element signature="e#9762#10046#0" expanded="false" />
+            <element signature="e#10098#10205#0" expanded="false" />
+            <element signature="e#10289#10608#0" expanded="false" />
+            <element signature="e#10649#10865#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -463,11 +472,11 @@
           <caret line="229" column="0" lean-forward="false" selection-start-line="229" selection-start-column="0" selection-end-line="229" selection-end-column="0" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#8831#9996#0" expanded="false" />
-            <element signature="e#10046#10330#0" expanded="false" />
-            <element signature="e#10382#10489#0" expanded="false" />
-            <element signature="e#10573#10892#0" expanded="false" />
-            <element signature="e#10933#11149#0" expanded="false" />
+            <element signature="e#8547#9712#0" expanded="false" />
+            <element signature="e#9762#10046#0" expanded="false" />
+            <element signature="e#10098#10205#0" expanded="false" />
+            <element signature="e#10289#10608#0" expanded="false" />
+            <element signature="e#10649#10865#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -509,11 +518,11 @@
           <caret line="220" column="73" lean-forward="true" selection-start-line="220" selection-start-column="73" selection-end-line="220" selection-end-column="73" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#8831#9996#0" expanded="false" />
-            <element signature="e#10046#10330#0" expanded="false" />
-            <element signature="e#10382#10489#0" expanded="false" />
-            <element signature="e#10573#10892#0" expanded="false" />
-            <element signature="e#10933#11149#0" expanded="false" />
+            <element signature="e#8547#9712#0" expanded="false" />
+            <element signature="e#9762#10046#0" expanded="false" />
+            <element signature="e#10098#10205#0" expanded="false" />
+            <element signature="e#10289#10608#0" expanded="false" />
+            <element signature="e#10649#10865#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -811,15 +820,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prepareDataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="751">
-          <caret line="279" column="0" lean-forward="true" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
+        <state relative-caret-position="1095">
+          <caret line="279" column="18" lean-forward="false" selection-start-line="279" selection-start-column="18" selection-end-line="279" selection-end-column="18" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
-            <element signature="e#8831#9996#0" expanded="false" />
-            <element signature="e#10046#10330#0" expanded="false" />
-            <element signature="e#10382#10489#0" expanded="false" />
-            <element signature="e#10573#10892#0" expanded="false" />
-            <element signature="e#10933#11149#0" expanded="false" />
+            <element signature="e#8547#9712#0" expanded="false" />
+            <element signature="e#9762#10046#0" expanded="false" />
+            <element signature="e#10098#10205#0" expanded="false" />
+            <element signature="e#10289#10608#0" expanded="false" />
+            <element signature="e#10649#10865#0" expanded="false" />
           </folding>
         </state>
       </provider>
