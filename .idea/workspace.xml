@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="67409d12-0ac3-4e23-b425-5bb735b352b3" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/prepareDataset.py" afterPath="$PROJECT_DIR$/prepareDataset.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -47,7 +46,7 @@
       <file leaf-file-name="prepareDataset.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prepareDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
+            <state relative-caret-position="751">
               <caret line="279" column="0" lean-forward="true" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -308,7 +307,14 @@
       <option name="project" value="LOCAL" />
       <updated>1525883549627</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="midi file parsing made parallel">
+      <created>1526419884969</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1526419884969</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -371,7 +377,8 @@
     <MESSAGE value="get_notes_chords_rests cleanup" />
     <MESSAGE value="prepareDataset cleanup" />
     <MESSAGE value="prepareDataset added percentage" />
-    <option name="LAST_COMMIT_MESSAGE" value="prepareDataset added percentage" />
+    <MESSAGE value="midi file parsing made parallel" />
+    <option name="LAST_COMMIT_MESSAGE" value="midi file parsing made parallel" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -804,7 +811,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/prepareDataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
+        <state relative-caret-position="751">
           <caret line="279" column="0" lean-forward="true" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
