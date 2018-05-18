@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="67409d12-0ac3-4e23-b425-5bb735b352b3" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lstm.py" afterPath="$PROJECT_DIR$/lstm.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/prepareDataset.py" afterPath="$PROJECT_DIR$/prepareDataset.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,18 +15,22 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Classical_Piano_Composer_master$lstm.coverage" NAME="lstm Coverage Results" MODIFIED="1525279846167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Classical_Piano_Composer_master$prepareDataset.coverage" NAME="prepareDataset Coverage Results" MODIFIED="1526419527479" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Classical_Piano_Composer_master$prepareDataset.coverage" NAME="prepareDataset Coverage Results" MODIFIED="1526481137571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Classical_Piano_Composer_master$playground.coverage" NAME="playground Coverage Results" MODIFIED="1525527353800" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="lstm.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="lstm.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lstm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="59" column="46" lean-forward="false" selection-start-line="59" selection-start-column="46" selection-end-line="59" selection-end-column="46" />
+            <state relative-caret-position="578">
+              <caret line="143" column="45" lean-forward="false" selection-start-line="143" selection-start-column="45" selection-end-line="143" selection-end-column="45" />
               <folding>
                 <element signature="e#96#107#0" expanded="true" />
+                <element signature="e#1714#2508#0" expanded="false" />
+                <element signature="e#2568#3066#0" expanded="false" />
+                <element signature="e#3124#4281#0" expanded="false" />
+                <element signature="e#4331#4617#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -34,21 +39,34 @@
       <file leaf-file-name="playground.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/playground.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="187" column="22" lean-forward="false" selection-start-line="187" selection-start-column="22" selection-end-line="187" selection-end-column="22" />
+            <state relative-caret-position="272">
+              <caret line="262" column="21" lean-forward="false" selection-start-line="262" selection-start-column="4" selection-end-line="262" selection-end-column="21" />
               <folding>
+                <element signature="e#6455#7848#0" expanded="false" />
+                <element signature="e#7898#8182#0" expanded="false" />
                 <element signature="e#8233#9758#0" expanded="false" />
-                <element signature="e#9804#11099#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prepareDataset.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="predict.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/predict.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1470">
+              <caret line="105" column="35" lean-forward="false" selection-start-line="105" selection-start-column="35" selection-end-line="105" selection-end-column="35" />
+              <folding>
+                <element signature="e#3810#4959#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="prepareDataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/prepareDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1095">
-              <caret line="279" column="18" lean-forward="false" selection-start-line="279" selection-start-column="18" selection-end-line="279" selection-end-column="18" />
+            <state relative-caret-position="240">
+              <caret line="208" column="68" lean-forward="true" selection-start-line="208" selection-start-column="68" selection-end-line="208" selection-end-column="68" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
                 <element signature="e#8547#9712#0" expanded="false" />
@@ -114,11 +132,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/midi_songs/playground.py" />
-        <option value="$PROJECT_DIR$/lstm.py" />
         <option value="$PROJECT_DIR$/predict.py" />
         <option value="/Dummy.txt" />
         <option value="$PROJECT_DIR$/playground.py" />
         <option value="$PROJECT_DIR$/prepareDataset.py" />
+        <option value="$PROJECT_DIR$/lstm.py" />
       </list>
     </option>
   </component>
@@ -148,7 +166,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -160,7 +178,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -322,14 +340,21 @@
       <option name="project" value="LOCAL" />
       <updated>1526462416939</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="midi file parsing added main func">
+      <created>1526477430000</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1526477430000</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21030043" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21316166" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31318018" sideWeight="0.5028612" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -398,7 +423,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="85" />
+      <option name="time" value="88" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -414,8 +439,9 @@
         <state relative-caret-position="345">
           <caret line="187" column="22" lean-forward="false" selection-start-line="187" selection-start-column="22" selection-end-line="187" selection-end-column="22" />
           <folding>
+            <element signature="e#6455#7848#0" expanded="false" />
+            <element signature="e#7898#8182#0" expanded="false" />
             <element signature="e#8233#9758#0" expanded="false" />
-            <element signature="e#9804#11099#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -441,6 +467,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -451,6 +481,10 @@
           <caret line="59" column="46" lean-forward="false" selection-start-line="59" selection-start-column="46" selection-end-line="59" selection-end-column="46" />
           <folding>
             <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -460,8 +494,9 @@
         <state relative-caret-position="345">
           <caret line="187" column="22" lean-forward="false" selection-start-line="187" selection-start-column="22" selection-end-line="187" selection-end-column="22" />
           <folding>
+            <element signature="e#6455#7848#0" expanded="false" />
+            <element signature="e#7898#8182#0" expanded="false" />
             <element signature="e#8233#9758#0" expanded="false" />
-            <element signature="e#9804#11099#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -487,6 +522,10 @@
           <caret line="59" column="46" lean-forward="false" selection-start-line="59" selection-start-column="46" selection-end-line="59" selection-end-column="46" />
           <folding>
             <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -497,6 +536,10 @@
           <caret line="59" column="46" lean-forward="false" selection-start-line="59" selection-start-column="46" selection-end-line="59" selection-end-column="46" />
           <folding>
             <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -506,8 +549,9 @@
         <state relative-caret-position="345">
           <caret line="187" column="22" lean-forward="true" selection-start-line="187" selection-start-column="22" selection-end-line="187" selection-end-column="22" />
           <folding>
+            <element signature="e#6455#7848#0" expanded="false" />
+            <element signature="e#7898#8182#0" expanded="false" />
             <element signature="e#8233#9758#0" expanded="false" />
-            <element signature="e#9804#11099#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -533,6 +577,10 @@
           <caret line="9" column="8" lean-forward="false" selection-start-line="9" selection-start-column="8" selection-end-line="9" selection-end-column="8" />
           <folding>
             <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -550,6 +598,10 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -750,34 +802,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/predict.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="123" column="42" lean-forward="true" selection-start-line="123" selection-start-column="42" selection-end-line="123" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lstm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="59" column="46" lean-forward="false" selection-start-line="59" selection-start-column="46" selection-end-line="59" selection-end-column="46" />
-          <folding>
-            <element signature="e#96#107#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/playground.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="187" column="22" lean-forward="false" selection-start-line="187" selection-start-column="22" selection-end-line="187" selection-end-column="22" />
-          <folding>
-            <element signature="e#8233#9758#0" expanded="false" />
-            <element signature="e#9804#11099#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/LSTM_env/lib/python3.6/site-packages/music21/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-975">
@@ -798,7 +822,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1359">
           <caret line="131" column="0" lean-forward="false" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -806,7 +829,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="201">
           <caret line="129" column="0" lean-forward="false" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -814,14 +836,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1598" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/prepareDataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1095">
-          <caret line="279" column="18" lean-forward="false" selection-start-line="279" selection-start-column="18" selection-end-line="279" selection-end-column="18" />
+        <state relative-caret-position="240">
+          <caret line="208" column="68" lean-forward="true" selection-start-line="208" selection-start-column="68" selection-end-line="208" selection-end-column="68" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
             <element signature="e#8547#9712#0" expanded="false" />
@@ -829,6 +850,42 @@
             <element signature="e#10098#10205#0" expanded="false" />
             <element signature="e#10289#10608#0" expanded="false" />
             <element signature="e#10649#10865#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/predict.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1470">
+          <caret line="105" column="35" lean-forward="false" selection-start-line="105" selection-start-column="35" selection-end-line="105" selection-end-column="35" />
+          <folding>
+            <element signature="e#3810#4959#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/playground.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="262" column="21" lean-forward="false" selection-start-line="262" selection-start-column="4" selection-end-line="262" selection-end-column="21" />
+          <folding>
+            <element signature="e#6455#7848#0" expanded="false" />
+            <element signature="e#7898#8182#0" expanded="false" />
+            <element signature="e#8233#9758#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="143" column="45" lean-forward="false" selection-start-line="143" selection-start-column="45" selection-end-line="143" selection-end-column="45" />
+          <folding>
+            <element signature="e#96#107#0" expanded="true" />
+            <element signature="e#1714#2508#0" expanded="false" />
+            <element signature="e#2568#3066#0" expanded="false" />
+            <element signature="e#3124#4281#0" expanded="false" />
+            <element signature="e#4331#4617#0" expanded="false" />
           </folding>
         </state>
       </provider>

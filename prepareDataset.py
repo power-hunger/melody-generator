@@ -173,7 +173,7 @@ string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Con
                           "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto",]
 
-dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/e"
+dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/c"
 output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_full.txt"
 output_file_path_same_note_length01 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_01.txt"
 output_file_path_same_note_exception = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_exception.txt"
