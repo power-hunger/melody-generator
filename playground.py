@@ -163,6 +163,7 @@ from music21 import volume
 import os
 from pathlib import Path
 import matplotlib as mpl
+import pickle
 mpl.use('TkAgg')
 
 
@@ -172,44 +173,94 @@ STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Con
                           "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
                           "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                           "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
-MIDI_DIR_PATH = '/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/delete_me.txt'
+SAVED_KEYB_NOTES = 'data/keyboard_notes'
+SAVED_STR_NOTES = 'data/string_notes'
+
+SONG_DIR_PATH = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/smalltest.txt"
 
 
 def main():
-    piano_notes1 = get_notes_chords_rests(KEYBOARD_INSTRUMENTS)
-    string_notes1 = get_notes_chords_rests(STRING_INSTRUMENTS)
-    print(len(piano_notes1), len(string_notes1))
+
+    keyboard_notes, string_notes = get_all_notes()
+
+    # get amount of pitch names
+    n_vocab_k = len(set(keyboard_notes))
+    n_vocab_s = len(set(string_notes))
+
+    x = prepare_sequences(keyboard_notes, n_vocab_k)
+    y = prepare_sequences(string_notes, n_vocab_s)
+
+    print(n_vocab_k)
+    print(n_vocab_s)
 
 
-def get_notes_chords_rests(instrument_type):
-    """ Get all the notes, chords and rests from the midi files in the ./midi_songs directory """
-    note_list = []
-    with open(MIDI_DIR_PATH) as f:
+def get_all_notes():
+    cmp_keyboard_notes = []
+    cmp_string_notes = []
+
+    with open(str(SONG_DIR_PATH)) as f:
+        # iterate trough songs and save notes
         for line in f:
-            try:
-                midi_file = converter.parse(line.rstrip())
-                parts = instrument.partitionByInstrument(midi_file)
-                for music_instrument in range(len(parts)):
-                    if parts.parts[music_instrument].id in instrument_type:
-                        for element_by_offset in stream.iterator.OffsetIterator(parts[music_instrument]):
-                            for entry in element_by_offset:
-                                if isinstance(entry, note.Note):
-                                    check_rest_amount(entry, note_list)
-                                    note_list.append(str(entry.pitch))
-                                elif isinstance(entry, chord.Chord):
-                                    check_rest_amount(entry, note_list)
-                                    note_list.append('.'.join(str(n) for n in entry.normalOrder))
-                                elif isinstance(entry, note.Rest):
-                                    check_rest_amount(entry, note_list)
-                                    note_list.append('Rest')
-            except Exception as e:
-                print("failed on ", line.rstrip(), e)
-                pass
+            midi_file_path = line.rstrip()
+            midi_file_path = line.rstrip()
+            midi_file_path = midi_file_path.replace("/home/konrads/Documents/bakalaurs/",
+                                                    "/Users/konradsbuss/Documents/Uni/bak/dataset/")
+            midi_file_path = midi_file_path.replace("\\", "/")
+            midi_file_path = midi_file_path.replace("E:", "/Users/konradsbuss/Documents/Uni/bak/dataset")
+
+            cmp_keyboard_notes = get_notes_chords_rests(KEYBOARD_INSTRUMENTS, midi_file_path, cmp_keyboard_notes)
+            cmp_string_notes = get_notes_chords_rests(STRING_INSTRUMENTS, midi_file_path, cmp_string_notes)
+
+            cmp_keyboard_notes, cmp_string_notes = note_sanity_check(cmp_keyboard_notes, cmp_string_notes)
+
+    with open(str(SAVED_KEYB_NOTES), 'wb') as file_path:
+        pickle.dump(cmp_keyboard_notes, file_path)
+    with open(str(SAVED_STR_NOTES), 'wb') as file_path:
+        pickle.dump(cmp_string_notes, file_path)
+
+    return cmp_keyboard_notes, cmp_string_notes
+
+
+def note_sanity_check(keyboard_notes, string_notes):
+    """Check note length and normalize it"""
+    if len(keyboard_notes) != len(string_notes):
+        notes_max = max(len(keyboard_notes), len(string_notes))
+        notes_min = min(len(keyboard_notes), len(string_notes))
+
+        if notes_max == len(keyboard_notes):
+            del keyboard_notes[notes_min:]
+        else:
+            del string_notes[notes_min:]
+
+    return keyboard_notes, string_notes
+
+
+def get_notes_chords_rests(instrument_type, path, note_list):
+    """ Get all the notes, chords and rests from the midi files in the song directory """
+    try:
+        midi_file = converter.parse(path)
+        parts = instrument.partitionByInstrument(midi_file)
+        for music_instrument in range(len(parts)):
+            if parts.parts[music_instrument].id in instrument_type:
+                for element_by_offset in stream.iterator.OffsetIterator(parts[music_instrument]):
+                    for entry in element_by_offset:
+                        if isinstance(entry, note.Note):
+                            check_rest_amount(entry, note_list)
+                            note_list.append(str(entry.pitch))
+                        elif isinstance(entry, chord.Chord):
+                            check_rest_amount(entry, note_list)
+                            note_list.append('.'.join(str(n) for n in entry.normalOrder))
+                        elif isinstance(entry, note.Rest):
+                            check_rest_amount(entry, note_list)
+                            note_list.append('Rest')
+    except Exception as e:
+        print("failed on ", path, e)
+        pass
     return note_list
 
 
 def check_rest_amount(element, note_list):
-    """Check if there is not missing rests which ensures silent part in melody"""
+    """Check if there is not a missing rests which ensures silent part in melody"""
     if element.offset / 0.5 <= len(note_list):
         return
     else:
@@ -269,9 +320,6 @@ def prepare_sequences(notes, n_vocab):
 
      # create a dictionary to map pitches to integers
     note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
-    print("note_to_int")
-    print(note_to_int)
-
 
     network_input = []
     network_output = []
@@ -283,26 +331,16 @@ def prepare_sequences(notes, n_vocab):
         network_input.append([note_to_int[char] for char in sequence_in])
         network_output.append(note_to_int[sequence_out])
 
-    print("network_output")
-    print(len(network_output))
     n_patterns = len(network_input)
-    print("n_patterns")
-    print(n_patterns)
 
     # reshape the input into a format compatible with LSTM layers
     network_input = numpy.reshape(network_input, (n_patterns, sequence_length, 1))
-    print("network_input")
-    print(network_input.shape)
-
-
-
     # normalize input
     network_input = network_input / float(n_vocab)
 
     network_output = np_utils.to_categorical(network_output)
 
-    return (1, 2)
-    # return (network_input, network_output)
+    return (network_input, network_output)
 
 
 main()
