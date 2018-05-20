@@ -1,6 +1,7 @@
-# Classical Piano Composer
+# Classical Melody Generator
 
-This project allows you to train a neural network to generate midi music files that make use of a single instrument
+This project allows you to train a neural network on two instrument midi files to add extra moldy to any one instrument 
+midi file.
 
 ## Requirements
 
@@ -21,7 +22,8 @@ E.g.
 python lstm.py
 ```
 
-The network will use every midi file in ./midi_songs to train the network. The midi files should only contain a single instrument to get the most out of the training.
+The network will use every midi file in ./midi_songs to train the network. The midi files must contain two known 
+instruments with similar note amount. Default instruments are- any string instrument and any keyboard instrument.
 
 **NOTE**: You can stop the process at any point in time and the weights from the latest completed epoch will be available for text generation purposes.
 
