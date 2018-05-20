@@ -1,11 +1,12 @@
 """ This module prepares midi file data and feeds it to the neural network for training """
 import pickle
 import numpy
+import os
 from music21 import converter, instrument, note, chord, stream
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, LSTM, TimeDistributed, Activation
+from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.utils import np_utils
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
 
 
 KEYBOARD_INSTRUMENTS = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
@@ -16,16 +17,20 @@ STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Con
 SONG_DIR_PATH = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_01.txt"
 SAVED_KEYB_NOTES = 'data/keyboard_notes'
 SAVED_STR_NOTES = 'data/string_notes'
+MODEL_WEIGHTS = "data/weights.hdf5"
+LOGS = 'data/logs'
 
 
 def train_network():
     """ Train a Neural Network to generate music """
+
     keyboard_notes, string_notes = get_all_notes()
+    n_vocab_str_notes = len(set(string_notes))
 
     x = prepare_sequences(keyboard_notes)
     y = prepare_sequences(string_notes)
 
-    model = create_network(x, y)
+    model = create_network(x, n_vocab_str_notes)
     train(model, x, y)
 
 
@@ -128,15 +133,14 @@ def prepare_sequences(notes):
     # reshape the input into a format compatible with LSTM layers
     network_data = numpy.reshape(network_data, (n_patterns, sequence_length, 1))
 
-    # normalize input
+    # normalize input, one-hot-encoding
     network_data = np_utils.to_categorical(network_data)
 
     return network_data
 
 
-def create_network(network_input, network_output):
+def create_network(network_input, n_vocab_str_notes):
     """ create the structure of the neural network """
-    n_vocab_str_notes = len(set(network_output))
     model = Sequential()
 
     model.add(LSTM(
@@ -158,17 +162,44 @@ def create_network(network_input, network_output):
 
 def train(model, network_input, network_output):
     """ train the neural network """
-    file_path = "weights-improvemend.hdf5"
-    checkpoint = ModelCheckpoint(
-        file_path,
-        monitor='loss',
-        verbose=0,
-        save_best_only=True,
-        mode='min'
-    )
-    callbacks_list = [checkpoint]
+    if os.path.isfile(MODEL_WEIGHTS):
+        print("Resumed model's weights from {}".format(MODEL_WEIGHTS))
+        # load weights
+        model.load_weights(MODEL_WEIGHTS)
 
-    model.fit(network_input, network_output, epochs=200, batch_size=64, callbacks=callbacks_list)
+    batch_size = 64
+    epochs = 200
+    file_path = MODEL_WEIGHTS
+
+    checkpoint = ModelCheckpoint(file_path,
+                                 monitor='loss',
+                                 verbose=0,
+                                 save_best_only=True,
+                                 mode='min')
+
+    # TensorBoard callback for visualization of training history
+    tb = TensorBoard(log_dir=LOGS,
+                     histogram_freq=10,
+                     batch_size=batch_size,
+                     write_graph=True,
+                     write_grads=True,
+                     write_images=False,
+                     embeddings_freq=0,
+                     embeddings_layer_names=None,
+                     embeddings_metadata=None)
+
+    # Early stopping - Stop training before overfitting
+    early_stop = EarlyStopping(monitor='val_loss',
+                               min_delta=0,
+                               patience=3,
+                               verbose=1,
+                               mode='auto')
+
+    model.fit(network_input, network_output,
+              validation_split=0.3,
+              epochs=epochs,
+              batch_size=batch_size,
+              callbacks=[tb, early_stop, checkpoint])
 
 
 if __name__ == '__main__':

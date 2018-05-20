@@ -1,62 +1,69 @@
-""" This module generates notes for a midi file using the
-    trained neural network """
+""" This module generates notes for a midi file using the trained neural network """
 import pickle
 import numpy
-from music21 import instrument, note, stream, chord
+from keras.utils import np_utils
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import LSTM
-from keras.layers import Activation
+from keras.layers import Dense, Dropout, LSTM, TimeDistributed
+from music21 import instrument, note, stream, chord
+
+
+SAVED_KEYB_NOTES = 'data/keyboard_notes'
+SAVED_STR_NOTES = 'data/string_notes'
+MODEL_WEIGHTS = "weights-improvemend.hdf5"
+MIDI_OUTPUT_PATH = "data/created_midi/output.mid"
+MIDI_OUTPUT_PATH2 = "data/created_midi/output2.mid"
+
 
 def generate():
     """ Generate a piano midi file """
-    #load the notes used to train the model
-    with open('data/notes', 'rb') as filepath:
-        notes = pickle.load(filepath)
+    # load the notes used to train the model
+    with open(SAVED_KEYB_NOTES, 'rb') as file_path:
+        keyboard_notes = pickle.load(file_path)
+    with open(SAVED_STR_NOTES, 'rb') as file_path:
+        string_notes = pickle.load(file_path)
 
     # Get all pitch names
-    pitchnames = sorted(set(item for item in notes))
+    pitch_names_k = sorted(set(item for item in keyboard_notes))
+    pitch_names_s = sorted(set(item for item in string_notes))
+
     # Get all pitch names
-    n_vocab = len(set(notes))
+    n_vocab_k = len(set(keyboard_notes))
+    n_vocab_s = len(set(string_notes))
 
-    network_input, normalized_input = prepare_sequences(notes, pitchnames, n_vocab)
-    model = create_network(normalized_input, n_vocab)
-    prediction_output = generate_notes(model, network_input, pitchnames, n_vocab)
-    create_midi(prediction_output)
+    network_input, normalized_input = prepare_sequences(keyboard_notes, pitch_names_k)
+    model = create_network(normalized_input, n_vocab_s)
+    k_notes, s_notes = generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k)
+    create_midi(k_notes, MIDI_OUTPUT_PATH)
+    create_midi(s_notes, MIDI_OUTPUT_PATH2)
 
-def prepare_sequences(notes, pitchnames, n_vocab):
+
+def prepare_sequences(notes, pitch_names):
     """ Prepare the sequences used by the Neural Network """
-    # map between notes and integers and back
-    note_to_int = dict((note, number) for number, note in enumerate(pitchnames))
-
     sequence_length = 100
     network_input = []
-    output = []
+
+    # map between notes and integers and back
+    note_to_int = dict((note, number) for number, note in enumerate(pitch_names))
+
+    # create a dictionary to map pitches to integers
     for i in range(0, len(notes) - sequence_length, 1):
         sequence_in = notes[i:i + sequence_length]
-        sequence_out = notes[i + sequence_length]
         network_input.append([note_to_int[char] for char in sequence_in])
-        output.append(note_to_int[sequence_out])
-    # create input sequences and the corresponding outputs
-    for i in range(0, len(notes) - sequence_length, 1):
-        sequence_in = notes[i:i + sequence_length]
-        sequence_out = notes[i + sequence_length]
-        network_input.append([note_to_int[char] for char in sequence_in])
-        network_output.append(note_to_int[sequence_out])
 
     n_patterns = len(network_input)
 
     # reshape the input into a format compatible with LSTM layers
     normalized_input = numpy.reshape(network_input, (n_patterns, sequence_length, 1))
-    # normalize input
-    normalized_input = normalized_input / float(n_vocab)
+    # normalize input, one-hot-encoding
+    normalized_input = np_utils.to_categorical(normalized_input)
 
-    return (network_input, normalized_input)
+    return network_input, normalized_input
 
-def create_network(network_input, n_vocab):
+
+def create_network(network_input, n_vocab_s):
     """ create the structure of the neural network """
     model = Sequential()
+
     model.add(LSTM(
         512,
         input_shape=(network_input.shape[1], network_input.shape[2]),
@@ -65,54 +72,68 @@ def create_network(network_input, n_vocab):
     model.add(Dropout(0.3))
     model.add(LSTM(512, return_sequences=True))
     model.add(Dropout(0.3))
-    model.add(LSTM(512))
-    model.add(Dense(256))
+    model.add(LSTM(512, return_sequences=True))
+    model.add(TimeDistributed(Dense(256)))
     model.add(Dropout(0.3))
-    model.add(Dense(n_vocab))
-    model.add(Activation('softmax'))
+    model.add(TimeDistributed(Dense(n_vocab_s, activation='softmax')))
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
-    # Load the weights to each node
-    model.load_weights('best-weights-without-rests.hdf5')
+    model.load_weights(MODEL_WEIGHTS)
 
     return model
 
-def generate_notes(model, network_input, pitchnames, n_vocab):
+
+def generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k):
     """ Generate notes from the neural network based on a sequence of notes """
     # pick a random sequence from the input as a starting point for the prediction
-    start = numpy.random.randint(0, len(network_input)-1)
-
-    int_to_note = dict((number, note) for number, note in enumerate(pitchnames))
-
-    pattern = network_input[start]
     prediction_output = []
+    seed_k_notes = []
+    start = numpy.random.randint(0, len(network_input)-100)
+    pattern = network_input[0]
+    int_to_note_k = dict((number, note) for number, note in enumerate(pitch_names_k))
+    int_to_note_s = dict((number, note) for number, note in enumerate(pitch_names_s))
 
-    # generate 500 notes
-    for note_index in range(500):
-        prediction_input = numpy.reshape(pattern, (1, len(pattern), 1))
-        prediction_input = prediction_input / float(n_vocab)
+    prediction_input = numpy.reshape(pattern, (1, len(pattern), 1))
+    prediction_input = np_utils.to_categorical(prediction_input, n_vocab_k)
 
-        prediction = model.predict(prediction_input, verbose=0)
+    prediction = model.predict(prediction_input, verbose=0)
+    normalized_pred = numpy.argmax(prediction, axis=2)
+    normalized_pred = normalized_pred.flatten()
 
-        index = numpy.argmax(prediction)
-        result = int_to_note[index]
-        prediction_output.append(result)
+    for note_s in normalized_pred.tolist():
+        prediction_output.append(int_to_note_s[note_s])
 
-        pattern.append(index)
-        pattern = pattern[1:len(pattern)]
+    for note_k in pattern:
+        seed_k_notes.append(int_to_note_k[note_k])
 
-    return prediction_output
+    return seed_k_notes, prediction_output
 
-def create_midi(prediction_output):
-    """ convert the output from the prediction to notes and create a midi file
-        from the notes """
+
+def create_midi(note_list, path):
+    """ convert the output from the prediction to notes and create a midi file from the notes """
     offset = 0
     output_notes = []
 
+    # p = stream.Part()
+    #
+    # # Midi file consists from 2 parts. First contains keyboards notes and second string notes
+    # for part in range(2):
+    #     if part == 0:
+    #         music_instrument = instrument.Piano()
+    #         note_list = k_notes
+    #     else:
+    #         music_instrument = instrument.StringInstrument()
+    #         note_list = s_notes
+
     # create note and chord objects based on the values generated by the model
-    for pattern in prediction_output:
+    for pattern in note_list:
+        # pattern is a Rest
+        if pattern == 'Rest':
+            new_note = note.Rest()
+            new_note.offset = offset
+            output_notes.append(new_note)
         # pattern is a chord
-        if ('.' in pattern) or pattern.isdigit():
+        elif ('.' in pattern) or pattern.isdigit():
             notes_in_chord = pattern.split('.')
             notes = []
             for current_note in notes_in_chord:
@@ -134,7 +155,8 @@ def create_midi(prediction_output):
 
     midi_stream = stream.Stream(output_notes)
 
-    midi_stream.write('midi', fp='test_output.mid')
+    midi_stream.write('midi', fp=path)
+
 
 if __name__ == '__main__':
     generate()
