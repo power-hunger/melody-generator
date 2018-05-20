@@ -39,7 +39,7 @@ python predict.py
 
 You can run the prediction file right away using the **weights.hdf5** file
 
-## Prepare your own song
+## Prepare your own song data set
 
 To prepare your own data set put your midi files in /midi_songs and then run **prepareDataset.py**.
 
