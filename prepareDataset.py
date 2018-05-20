@@ -1,14 +1,9 @@
 """ This module sorts data for training from The Lakh MIDI Dataset v0.1"""
 from music21 import chord, converter, instrument, note, stream, common
 from pathlib import Path
+import constants as c
 import csv
 
-
-keyboard_instruments = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta",]
-string_instruments = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
-                          "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
-                          "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
-                          "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto",]
 
 dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/c"
 output_file_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_full.txt"
@@ -33,13 +28,13 @@ def check_instruments_and_save_notes(midi_file_path):
         parts = instrument.partitionByInstrument(song)
         if parts:
             if len(parts) == 2:
-                if (parts.parts[0].id in keyboard_instruments and parts.parts[1].id in string_instruments) or \
-                        (parts.parts[1].id in keyboard_instruments and parts.parts[0].id in string_instruments):
+                if (parts.parts[0].id in c.KEYBOARD_INSTRUMENTS and parts.parts[1].id in c.STRING_INSTRUMENTS) or \
+                        (parts.parts[1].id in c.KEYBOARD_INSTRUMENTS and parts.parts[0].id in c.STRING_INSTRUMENTS):
                     print(midi_file_path)
                     write_to_file(output_file_path, str(midi_file_path))
 
-                    keyboard_notes = get_notes_chords_rests(keyboard_instruments, midi_file_path)
-                    string_notes = get_notes_chords_rests(string_instruments, midi_file_path)
+                    keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path)
+                    string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path)
                     print(len(keyboard_notes), len(string_notes))
                     notes_max = max(len(keyboard_notes), len(string_notes))
                     notes_min = min(len(keyboard_notes), len(string_notes))

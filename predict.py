@@ -1,25 +1,19 @@
 """ This module generates notes for a midi file using the trained neural network """
-import pickle
 import numpy
+import pickle
+import constants as c
 from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from music21 import instrument, note, stream, chord
 
 
-SAVED_KEYB_NOTES = 'data/notes/keyboard_notes'
-SAVED_STR_NOTES = 'data/notes/string_notes'
-WEIGHTS_PATH = "data/weights/weights.hdf5"
-MIDI_OUTPUT_PATH = "data/generated_midi/output.mid"
-MIDI_OUTPUT_PATH2 = "data/generated_midi/output2.mid"
-
-
 def generate():
     """ Generate a piano midi file """
     # load the notes used to train the model
-    with open(SAVED_KEYB_NOTES, 'rb') as file_path:
+    with open(c.SAVED_KEYB_NOTES, 'rb') as file_path:
         keyboard_notes = pickle.load(file_path)
-    with open(SAVED_STR_NOTES, 'rb') as file_path:
+    with open(c.SAVED_STR_NOTES, 'rb') as file_path:
         string_notes = pickle.load(file_path)
 
     # Get all pitch names
@@ -33,8 +27,8 @@ def generate():
     network_input, normalized_input = prepare_sequences(keyboard_notes, pitch_names_k)
     model = create_network(normalized_input, n_vocab_s)
     k_notes, s_notes = generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k)
-    create_midi(k_notes, MIDI_OUTPUT_PATH)
-    create_midi(s_notes, MIDI_OUTPUT_PATH2)
+    create_midi(k_notes, c.MIDI_OUTPUT_PATH)
+    create_midi(s_notes, c.MIDI_OUTPUT_PATH2)
 
 
 def prepare_sequences(notes, pitch_names):
@@ -78,7 +72,7 @@ def create_network(network_input, n_vocab_s):
     model.add(TimeDistributed(Dense(n_vocab_s, activation='softmax')))
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
-    model.load_weights(MODEL_WEIGHTS)
+    model.load_weights(c.MODEL_WEIGHTS)
 
     return model
 
@@ -89,7 +83,7 @@ def generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k
     prediction_output = []
     seed_k_notes = []
     start = numpy.random.randint(0, len(network_input)-100)
-    pattern = network_input[0]
+    pattern = network_input[start]
     int_to_note_k = dict((number, note) for number, note in enumerate(pitch_names_k))
     int_to_note_s = dict((number, note) for number, note in enumerate(pitch_names_s))
 
@@ -102,7 +96,6 @@ def generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k
 
     for note_s in normalized_pred.tolist():
         prediction_output.append(int_to_note_s[note_s])
-
     for note_k in pattern:
         seed_k_notes.append(int_to_note_k[note_k])
 

@@ -2,23 +2,12 @@
 import os
 import numpy
 import pickle
+import constants as c
 from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
 from music21 import converter, instrument, note, chord, stream
-
-
-KEYBOARD_INSTRUMENTS = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
-STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Contrabass", "Harp", "Guitar",
-                      "AcousticGuitar", "Acoustic Guitar", "ElectricGuitar", "Electric Guitar", "AcousticBass",
-                      "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
-                      "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
-SONG_DIR_PATH = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_01.txt"
-SAVED_KEYB_NOTES = 'data/notes/keyboard_notes'
-SAVED_STR_NOTES = 'data/notes/string_notes'
-WEIGHTS_PATH = "data/weights/weights.hdf5"
-LOGS = 'data/logs'
 
 
 def train_network():
@@ -38,8 +27,9 @@ def get_all_notes():
     cmp_keyboard_notes = []
     cmp_string_notes = []
 
-    with open(str(SONG_DIR_PATH)) as f:
+    with open(str(c.SONG_DIR_PATH)) as f:
         # iterate trough songs and save notes
+        # TODO remove specific replace strings
         for line in f:
             midi_file_path = line.rstrip()
             midi_file_path = midi_file_path.replace("/home/konrads/Documents/bakalaurs/",
@@ -47,17 +37,17 @@ def get_all_notes():
             midi_file_path = midi_file_path.replace("\\", "/")
             midi_file_path = midi_file_path.replace("E:", "/Users/konradsbuss/Documents/Uni/bak/dataset")
 
-            cmp_keyboard_notes = get_notes_chords_rests(KEYBOARD_INSTRUMENTS, midi_file_path, cmp_keyboard_notes)
-            cmp_string_notes = get_notes_chords_rests(STRING_INSTRUMENTS, midi_file_path, cmp_string_notes)
+            cmp_keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_keyboard_notes)
+            cmp_string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path, cmp_string_notes)
 
             cmp_keyboard_notes, cmp_string_notes = note_sanity_check(cmp_keyboard_notes, cmp_string_notes)
 
             print(len(cmp_string_notes))
             print(len(cmp_keyboard_notes))
 
-    with open(str(SAVED_KEYB_NOTES), 'wb') as file_path:
+    with open(str(c.SAVED_KEYB_NOTES), 'wb') as file_path:
         pickle.dump(cmp_keyboard_notes, file_path)
-    with open(str(SAVED_STR_NOTES), 'wb') as file_path:
+    with open(str(c.SAVED_STR_NOTES), 'wb') as file_path:
         pickle.dump(cmp_string_notes, file_path)
 
     return cmp_keyboard_notes, cmp_string_notes
@@ -162,21 +152,21 @@ def create_network(network_input, n_vocab_str_notes):
 
 def train(model, network_input, network_output):
     """ train the neural network """
-    if os.path.isfile(WEIGHTS_PATH):
-        print("Resumed model's weights from {}".format(WEIGHTS_PATH))
-        model.load_weights(WEIGHTS_PATH)
+    if os.path.isfile(c.WEIGHTS_PATH):
+        print("Resumed model's weights from {}".format(c.WEIGHTS_PATH))
+        model.load_weights(c.WEIGHTS_PATH)
 
     batch_size = 128
     epochs = 200
 
-    checkpoint = ModelCheckpoint(WEIGHTS_PATH,
+    checkpoint = ModelCheckpoint(c.WEIGHTS_PATH,
                                  monitor='loss',
                                  verbose=0,
                                  save_best_only=True,
                                  mode='min')
 
     # TensorBoard callback for visualization of training history
-    tb = TensorBoard(log_dir=LOGS,
+    tb = TensorBoard(log_dir=c.LOG_PATH,
                      histogram_freq=10,
                      batch_size=batch_size,
                      write_graph=True,
