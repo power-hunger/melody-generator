@@ -1,12 +1,12 @@
 """ This module prepares midi file data and feeds it to the neural network for training """
-import pickle
-import numpy
 import os
-from music21 import converter, instrument, note, chord, stream
+import numpy
+import pickle
+from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
-from keras.utils import np_utils
 from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
+from music21 import converter, instrument, note, chord, stream
 
 
 KEYBOARD_INSTRUMENTS = ["KeyboardInstrument", "Piano", "Harpsichord", "Clavichord", "Celesta", ]
@@ -15,9 +15,9 @@ STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Con
                       "Acoustic Bass", "ElectricBass", "Electric Bass", "FretlessBass", "Fretless Bass", "Mandolin",
                       "Ukulele", "Banjo", "Lute", "Sitar", "Shamisen", "Koto", ]
 SONG_DIR_PATH = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_01.txt"
-SAVED_KEYB_NOTES = 'data/keyboard_notes'
-SAVED_STR_NOTES = 'data/string_notes'
-MODEL_WEIGHTS = "data/weights.hdf5"
+SAVED_KEYB_NOTES = 'data/notes/keyboard_notes'
+SAVED_STR_NOTES = 'data/notes/string_notes'
+WEIGHTS_PATH = "data/weights/weights.hdf5"
 LOGS = 'data/logs'
 
 
@@ -162,16 +162,14 @@ def create_network(network_input, n_vocab_str_notes):
 
 def train(model, network_input, network_output):
     """ train the neural network """
-    if os.path.isfile(MODEL_WEIGHTS):
-        print("Resumed model's weights from {}".format(MODEL_WEIGHTS))
-        # load weights
-        model.load_weights(MODEL_WEIGHTS)
+    if os.path.isfile(WEIGHTS_PATH):
+        print("Resumed model's weights from {}".format(WEIGHTS_PATH))
+        model.load_weights(WEIGHTS_PATH)
 
-    batch_size = 64
+    batch_size = 128
     epochs = 200
-    file_path = MODEL_WEIGHTS
 
-    checkpoint = ModelCheckpoint(file_path,
+    checkpoint = ModelCheckpoint(WEIGHTS_PATH,
                                  monitor='loss',
                                  verbose=0,
                                  save_best_only=True,

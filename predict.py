@@ -7,11 +7,11 @@ from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from music21 import instrument, note, stream, chord
 
 
-SAVED_KEYB_NOTES = 'data/keyboard_notes'
-SAVED_STR_NOTES = 'data/string_notes'
-MODEL_WEIGHTS = "weights-improvemend.hdf5"
-MIDI_OUTPUT_PATH = "data/created_midi/output.mid"
-MIDI_OUTPUT_PATH2 = "data/created_midi/output2.mid"
+SAVED_KEYB_NOTES = 'data/notes/keyboard_notes'
+SAVED_STR_NOTES = 'data/notes/string_notes'
+WEIGHTS_PATH = "data/weights/weights.hdf5"
+MIDI_OUTPUT_PATH = "data/generated_midi/output.mid"
+MIDI_OUTPUT_PATH2 = "data/generated_midi/output2.mid"
 
 
 def generate():

@@ -1,3 +1,4 @@
+""" This module sorts data for training from The Lakh MIDI Dataset v0.1"""
 from music21 import chord, converter, instrument, note, stream, common
 from pathlib import Path
 import csv
