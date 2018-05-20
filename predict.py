@@ -45,7 +45,6 @@ def prepare_sequences(notes, pitch_names):
         network_input.append([note_to_int[char] for char in sequence_in])
 
     n_patterns = len(network_input)
-
     # reshape the input into a format compatible with LSTM layers
     normalized_input = numpy.reshape(network_input, (n_patterns, sequence_length, 1))
     # normalize input, one-hot-encoding
@@ -72,7 +71,7 @@ def create_network(network_input, n_vocab_s):
     model.add(TimeDistributed(Dense(n_vocab_s, activation='softmax')))
     model.compile(loss='categorical_crossentropy', optimizer='rmsprop')
 
-    model.load_weights(c.MODEL_WEIGHTS)
+    model.load_weights(c.WEIGHTS_PATH)
 
     return model
 
@@ -91,10 +90,9 @@ def generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k
     prediction_input = np_utils.to_categorical(prediction_input, n_vocab_k)
 
     prediction = model.predict(prediction_input, verbose=0)
-    normalized_pred = numpy.argmax(prediction, axis=2)
-    normalized_pred = normalized_pred.flatten()
+    prediction = (numpy.argmax(prediction, axis=2)).flatten()
 
-    for note_s in normalized_pred.tolist():
+    for note_s in prediction.tolist():
         prediction_output.append(int_to_note_s[note_s])
     for note_k in pattern:
         seed_k_notes.append(int_to_note_k[note_k])

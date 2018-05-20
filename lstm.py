@@ -12,7 +12,6 @@ from music21 import converter, instrument, note, chord, stream
 
 def train_network():
     """ Train a Neural Network to generate music """
-
     keyboard_notes, string_notes = get_all_notes()
     n_vocab_str_notes = len(set(string_notes))
 
@@ -39,7 +38,6 @@ def get_all_notes():
 
             cmp_keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_keyboard_notes)
             cmp_string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path, cmp_string_notes)
-
             cmp_keyboard_notes, cmp_string_notes = note_sanity_check(cmp_keyboard_notes, cmp_string_notes)
 
             print(len(cmp_string_notes))
@@ -119,10 +117,8 @@ def prepare_sequences(notes):
         network_data.append([note_to_int[char] for char in sequence])
 
     n_patterns = len(network_data)
-
     # reshape the input into a format compatible with LSTM layers
     network_data = numpy.reshape(network_data, (n_patterns, sequence_length, 1))
-
     # normalize input, one-hot-encoding
     network_data = np_utils.to_categorical(network_data)
 
@@ -183,6 +179,7 @@ def train(model, network_input, network_output):
                                verbose=1,
                                mode='auto')
 
+    # Train model
     model.fit(network_input, network_output,
               validation_split=0.3,
               epochs=epochs,
