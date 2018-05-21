@@ -5,15 +5,9 @@ import constants as c
 import csv
 
 
-dir_path = "/Users/konradsbuss/Documents/Uni/bak/dataset/lmd_full/c"
-output_file_path_same_note_length01 = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_same_note_len_01.txt"
-output_file_path_same_note_exception = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_exception.txt"
-output_file_path_csv = "/Users/konradsbuss/Documents/Uni/bak/dataset/preparedData/filename_csv.csv"
-
-
 def prepare_data():
     path_list = []
-    for midi_file_path in Path(dir_path).glob('**/*.mid'):
+    for midi_file_path in Path(c.SONG_DIR_PATH).glob('**/*.mid'):
         path_list.append(midi_file_path)
     common.runParallel(path_list, check_instruments_and_save_notes)
 
@@ -34,23 +28,23 @@ def check_instruments_and_save_notes(midi_file_path):
                 print(midi_file_path +
                       "\n k_note_amount: " + str(len(keyboard_notes)) +
                       "\n s_note_amount: " + str(len(string_notes)))
-                # calculate percentage difference between keyboard and string notes
+                # Calculate percentage difference between keyboard and string notes
                 notes_max = max(len(keyboard_notes), len(string_notes))
                 notes_min = min(len(keyboard_notes), len(string_notes))
                 percent_diff = (notes_max - notes_min) / notes_max
-                # write to csv file all details about file
-                write_to_csv(output_file_path_csv,
+                # Write to csv file all details about midi files for statistics
+                write_to_csv(c.MIDI_FILE_DATA,
                              percent_diff,
                              len(keyboard_notes),
                              len(string_notes),
                              midi_file_path)
-
-                if notes_max - (notes_max * 0.1) <= notes_min:
-                    write_to_file(output_file_path_same_note_length01, midi_file_path)
+                # In our case we will train our network on notes where note diff is not more than 10%
+                if percent_diff <= 0.1:
+                    write_to_file(c.SONG_LIST, midi_file_path)
 
     except Exception as e:
         print("Exception ", midi_file_path, e)
-        write_to_file(output_file_path_same_note_exception, midi_file_path + " " + e)
+        write_to_file(c.MIDI_EXCEPTION_FILES, midi_file_path + " " + e)
         pass
 
 
@@ -115,5 +109,5 @@ def init_csv_file(csv_file_path):
 
 
 if __name__ == '__main__':
-    init_csv_file(output_file_path_csv)
+    init_csv_file(c.MIDI_FILE_DATA)
     prepare_data()

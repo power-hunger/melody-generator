@@ -26,26 +26,18 @@ def get_all_notes():
     cmp_keyboard_notes = []
     cmp_string_notes = []
 
-    with open(str(c.SONG_DIR_PATH)) as f:
+    with open(c.SONG_LIST) as f:
         # iterate trough songs and save notes
-        # TODO remove specific replace strings
         for line in f:
             midi_file_path = line.rstrip()
-            midi_file_path = midi_file_path.replace("/home/konrads/Documents/bakalaurs/",
-                                                    "/Users/konradsbuss/Documents/Uni/bak/dataset/")
-            midi_file_path = midi_file_path.replace("\\", "/")
-            midi_file_path = midi_file_path.replace("E:", "/Users/konradsbuss/Documents/Uni/bak/dataset")
-
+            # get complete note list
             cmp_keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_keyboard_notes)
             cmp_string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path, cmp_string_notes)
             cmp_keyboard_notes, cmp_string_notes = note_sanity_check(cmp_keyboard_notes, cmp_string_notes)
 
-            print(len(cmp_string_notes))
-            print(len(cmp_keyboard_notes))
-
-    with open(str(c.SAVED_KEYB_NOTES), 'wb') as file_path:
+    with open(c.SAVED_KEYB_NOTES, 'wb') as file_path:
         pickle.dump(cmp_keyboard_notes, file_path)
-    with open(str(c.SAVED_STR_NOTES), 'wb') as file_path:
+    with open(c.SAVED_STR_NOTES, 'wb') as file_path:
         pickle.dump(cmp_string_notes, file_path)
 
     return cmp_keyboard_notes, cmp_string_notes
