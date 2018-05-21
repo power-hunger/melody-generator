@@ -9,17 +9,16 @@ from music21 import instrument, note, stream, chord
 
 
 def generate():
-    """ Generate a piano midi file """
-    # load the notes to train the model
+    """ Generate new midi file which is corresponding to given one """
+    # Load the notes
     with open(c.SAVED_KEYB_NOTES, 'rb') as file_path:
         keyboard_notes = pickle.load(file_path)
     with open(c.SAVED_STR_NOTES, 'rb') as file_path:
         string_notes = pickle.load(file_path)
-
-    # Get all pitch name count
+    # Get all pitch names
     pitch_names_k = sorted(set(item for item in keyboard_notes))
     pitch_names_s = sorted(set(item for item in string_notes))
-    # Get all pitch names
+    # Get all pitch name count
     n_vocab_k = len(set(keyboard_notes))
     n_vocab_s = len(set(string_notes))
 

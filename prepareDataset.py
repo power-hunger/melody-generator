@@ -22,21 +22,12 @@ def check_instruments_and_save_notes(midi_file_path):
             if (parts.parts[0].id in c.KEYBOARD_INSTRUMENTS and parts.parts[1].id in c.STRING_INSTRUMENTS) or \
                     (parts.parts[1].id in c.KEYBOARD_INSTRUMENTS and parts.parts[0].id in c.STRING_INSTRUMENTS):
 
-                keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path)
-                string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path)
-
-                print(midi_file_path +
-                      "\n k_note_amount: " + str(len(keyboard_notes)) +
-                      "\n s_note_amount: " + str(len(string_notes)))
-                # Calculate percentage difference between keyboard and string notes
-                notes_max = max(len(keyboard_notes), len(string_notes))
-                notes_min = min(len(keyboard_notes), len(string_notes))
-                percent_diff = (notes_max - notes_min) / notes_max
+                percent_diff, keyboard_note_len, string_note_len = get_midi_file_info(midi_file_path)
                 # Write to csv file all details about midi files for statistics
                 write_to_csv(c.MIDI_FILE_DATA,
                              percent_diff,
-                             len(keyboard_notes),
-                             len(string_notes),
+                             keyboard_note_len,
+                             string_note_len,
                              midi_file_path)
                 # In our case we will train our network on notes where note diff is not more than 10%
                 if percent_diff <= 0.1:
@@ -46,6 +37,23 @@ def check_instruments_and_save_notes(midi_file_path):
         print("Exception ", midi_file_path, e)
         write_to_file(c.MIDI_EXCEPTION_FILES, midi_file_path + " " + e)
         pass
+
+
+def get_midi_file_info(midi_file_path):
+    """ Get notes and calculate their difference in percents """
+    # Get notes
+    keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path)
+    string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path)
+    # Calculate percentage difference between keyboard and string notes
+    notes_max = max(len(keyboard_notes), len(string_notes))
+    notes_min = min(len(keyboard_notes), len(string_notes))
+    percent_diff = (notes_max - notes_min) / notes_max
+    # Log data about midi file
+    print(midi_file_path +
+          "\n k_note_amount: " + str(len(keyboard_notes)) +
+          "\n s_note_amount: " + str(len(string_notes)))
+
+    return percent_diff, len(keyboard_notes), len(string_notes)
 
 
 def get_notes_chords_rests(instrument_type, path):

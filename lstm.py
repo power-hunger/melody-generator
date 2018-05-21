@@ -43,20 +43,6 @@ def get_all_notes():
     return cmp_keyboard_notes, cmp_string_notes
 
 
-def note_sanity_check(keyboard_notes, string_notes):
-    """Check note length and normalize it"""
-    if len(keyboard_notes) != len(string_notes):
-        notes_max = max(len(keyboard_notes), len(string_notes))
-        notes_min = min(len(keyboard_notes), len(string_notes))
-
-        if notes_max == len(keyboard_notes):
-            del keyboard_notes[notes_min:]
-        else:
-            del string_notes[notes_min:]
-
-    return keyboard_notes, string_notes
-
-
 def get_notes_chords_rests(instrument_type, path, note_list):
     """ Get all the notes, chords and rests from the midi files in the song directory """
     try:
@@ -90,6 +76,20 @@ def check_rest_amount(element, note_list):
             note_list.append('Rest')
             if element.offset / 0.5 <= len(note_list):
                 return
+
+
+def note_sanity_check(keyboard_notes, string_notes):
+    """Check note length and normalize it"""
+    if len(keyboard_notes) != len(string_notes):
+        notes_max = max(len(keyboard_notes), len(string_notes))
+        notes_min = min(len(keyboard_notes), len(string_notes))
+
+        if notes_max == len(keyboard_notes):
+            del keyboard_notes[notes_min:]
+        else:
+            del string_notes[notes_min:]
+
+    return keyboard_notes, string_notes
 
 
 def prepare_sequences(notes):
