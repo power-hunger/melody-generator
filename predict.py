@@ -22,8 +22,8 @@ def generate():
     n_vocab_k = len(set(keyboard_notes))
     n_vocab_s = len(set(string_notes))
 
-    network_input, normalized_input = prepare_sequences(keyboard_notes, pitch_names_k)
-    model = create_network(normalized_input, n_vocab_s)
+    network_input, one_hot_en_input = prepare_sequences(keyboard_notes, pitch_names_k)
+    model = create_network(one_hot_en_input, n_vocab_s)
     k_notes, s_notes = generate_notes(model, network_input, pitch_names_k, pitch_names_s, n_vocab_k)
     create_midi(k_notes, c.MIDI_OUTPUT_PATH)
     create_midi(s_notes, c.MIDI_OUTPUT_PATH2)

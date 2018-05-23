@@ -23,24 +23,24 @@ def train_network():
 
 
 def get_all_notes():
-    cmp_keyboard_notes = []
-    cmp_string_notes = []
+    """ Save all notes in songs """
+    cmp_k_notes = []
+    cmp_s_notes = []
 
     with open(c.SONG_LIST) as f:
-        # iterate trough songs and save notes
         for line in f:
             midi_file_path = line.rstrip()
-            # get complete note list
-            cmp_keyboard_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_keyboard_notes)
-            cmp_string_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path, cmp_string_notes)
-            cmp_keyboard_notes, cmp_string_notes = note_sanity_check(cmp_keyboard_notes, cmp_string_notes)
+
+            cmp_k_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_k_notes)
+            cmp_s_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path, cmp_s_notes)
+            cmp_k_notes, cmp_s_notes = note_sanity_check(cmp_k_notes, cmp_s_notes)
 
     with open(c.SAVED_KEYB_NOTES, 'wb') as file_path:
-        pickle.dump(cmp_keyboard_notes, file_path)
+        pickle.dump(cmp_k_notes, file_path)
     with open(c.SAVED_STR_NOTES, 'wb') as file_path:
-        pickle.dump(cmp_string_notes, file_path)
+        pickle.dump(cmp_s_notes, file_path)
 
-    return cmp_keyboard_notes, cmp_string_notes
+    return cmp_k_notes, cmp_s_notes
 
 
 def get_notes_chords_rests(instrument_type, path, note_list):
@@ -153,7 +153,6 @@ def train(model, network_input, network_output):
                                  save_best_only=True,
                                  mode='min')
 
-    # TensorBoard callback for visualization of training history
     tb = TensorBoard(log_dir=c.LOG_PATH,
                      histogram_freq=10,
                      batch_size=batch_size,
@@ -164,16 +163,13 @@ def train(model, network_input, network_output):
                      embeddings_layer_names=None,
                      embeddings_metadata=None)
 
-    # Early stopping - Stop training before overfitting
     early_stop = EarlyStopping(monitor='val_loss',
                                min_delta=0,
                                patience=3,
                                verbose=1,
                                mode='auto')
 
-    # Train model
     model.fit(network_input, network_output,
-              validation_split=0.3,
               epochs=epochs,
               batch_size=batch_size,
               callbacks=[tb, early_stop, checkpoint])

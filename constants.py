@@ -1,9 +1,10 @@
-# Prepare data set constants
-SONG_LIST = "/data/preapared_dataset_data/all_songs.txt"
+""" This files consists of constants used in others modules"""
+# Prepare data-set constants
+SONG_LIST = '/data/preapared_dataset_data/all_songs.txt'
 MIDI_EXCEPTION_FILES = "/data/preapared_dataset_data/exceptions.txt"
 MIDI_FILE_DATA = "/data/preapared_dataset_data/midi_file_data.csv"
 SONG_DIR_PATH = "/midi_songs"
-# Saved all note paths
+# Saved all training note
 SAVED_KEYB_NOTES = 'data/notes/keyboard_notes'
 SAVED_STR_NOTES = 'data/notes/string_notes'
 # Lists of instruments
