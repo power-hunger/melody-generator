@@ -1,7 +1,7 @@
 # Classical Melody Generator
 
-This project allows you to train a neural network on two instrument midi files to add extra moldy to any one instrument 
-midi file.
+This project allows you to train a neural network on two instrument midi files. Afterwards new melody can be generated 
+to one instrument solo melody. 
 
 ## Requirements
 

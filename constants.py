@@ -17,6 +17,7 @@ STRING_INSTRUMENTS = ["StringInstrument", "Violin", "Viola", "Violoncello", "Con
 LOG_PATH = 'data/logs'
 WEIGHTS_PATH = "data/weights/weights.hdf5"
 # TODO change output path to only one
-# Newly created midi file
-MIDI_OUTPUT_PATH = "data/generated_midi/output.mid"
-MIDI_OUTPUT_PATH2 = "data/generated_midi/output2.mid"
+# MIDI files
+MIDI_OUTPUT_PATH_K = "data/generated_midi/output_k.mid"
+MIDI_OUTPUT_PATH_S = "data/generated_midi/output_s.mid"
+MIDI_SEED_PATH = "data/generated_midi/output_s.mid"

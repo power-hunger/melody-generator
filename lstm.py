@@ -29,7 +29,9 @@ def get_all_notes():
 
     with open(c.SONG_LIST) as f:
         for line in f:
-            midi_file_path = line.rstrip()
+            midi_file_path = line.replace("E:\\", "/Users/konradsbuss/Documents/Uni/bak/dataset/")
+            midi_file_path = midi_file_path.replace("\\", "/")
+            midi_file_path = midi_file_path.rstrip()
 
             cmp_k_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_k_notes)
             cmp_s_notes = get_notes_chords_rests(c.STRING_INSTRUMENTS, midi_file_path, cmp_s_notes)
@@ -145,7 +147,7 @@ def train(model, network_input, network_output):
         model.load_weights(c.WEIGHTS_PATH)
 
     batch_size = 128
-    epochs = 200
+    epochs = 100
 
     checkpoint = ModelCheckpoint(c.WEIGHTS_PATH,
                                  monitor='loss',
@@ -170,6 +172,7 @@ def train(model, network_input, network_output):
                                mode='auto')
 
     model.fit(network_input, network_output,
+              validation_split=0.3,
               epochs=epochs,
               batch_size=batch_size,
               callbacks=[tb, early_stop, checkpoint])
