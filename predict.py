@@ -36,20 +36,16 @@ def get_notes_chords_rests(path):
     note_list = []
     try:
         midi_file = converter.parse(path)
-        parts = instrument.partitionByInstrument(midi_file)
-        for music_instrument in range(len(parts)):
-            if parts.parts[music_instrument].id in c.KEYBOARD_INSTRUMENTS:
-                for element_by_offset in stream.iterator.OffsetIterator(parts[music_instrument]):
-                    for entry in element_by_offset:
-                        if isinstance(entry, note.Note):
-                            check_rest_amount(entry, note_list)
-                            note_list.append(str(entry.pitch))
-                        elif isinstance(entry, chord.Chord):
-                            check_rest_amount(entry, note_list)
-                            note_list.append('.'.join(str(n) for n in entry.normalOrder))
-                        elif isinstance(entry, note.Rest):
-                            check_rest_amount(entry, note_list)
-                            note_list.append('Rest')
+        for el in midi_file.recurse().notes:
+            if isinstance(el, note.Note):
+                check_rest_amount(el, note_list)
+                note_list.append(str(el.pitch))
+            elif isinstance(el, chord.Chord):
+                check_rest_amount(el, note_list)
+                note_list.append('.'.join(str(n) for n in el.normalOrder))
+            elif isinstance(el, note.Rest):
+                check_rest_amount(el, note_list)
+                note_list.append('Rest')
     except Exception as e:
         print("failed on ", path, e)
         pass
@@ -69,7 +65,7 @@ def check_rest_amount(element, note_list):
 
 def prepare_sequences(notes, pitch_names):
     """ Prepare the sequences used by the Neural Network """
-    sequence_length = 100
+    sequence_length = len(notes)-1
     network_input = []
 
     # map between notes and integers and back
@@ -95,7 +91,7 @@ def create_network(network_input, n_vocab_s):
 
     model.add(LSTM(
         512,
-        input_shape=(network_input.shape[1], network_input.shape[2]),
+        input_shape=(network_input.shape[1], 567),
         return_sequences=True
     ))
     model.add(Dropout(0.3))

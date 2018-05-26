@@ -147,7 +147,7 @@ def train(model, network_input, network_output):
         model.load_weights(c.WEIGHTS_PATH)
 
     batch_size = 128
-    epochs = 100
+    epochs = 200
 
     checkpoint = ModelCheckpoint(c.WEIGHTS_PATH,
                                  monitor='loss',
