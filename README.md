@@ -48,3 +48,7 @@ E.g.
 ```
 python prepareDataset.py
 ```
+
+## Result
+
+Result can be seen folowing this link - https://www.youtube.com/playlist?list=PLHrS8dlHp_NDW01b2cS8a43qtOiLVu7RK
