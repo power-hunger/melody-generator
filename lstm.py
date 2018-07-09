@@ -11,7 +11,7 @@ from music21 import converter, instrument, note, chord, stream
 
 
 def train_network():
-    """ Train a Neural Network to generate music """
+    """ Train a Neural Network to generate new melody """
     keyboard_notes, string_notes = get_all_notes()
     n_vocab_str_notes = len(set(string_notes))
 
@@ -29,8 +29,6 @@ def get_all_notes():
 
     with open(c.SONG_LIST) as f:
         for line in f:
-            midi_file_path = line.replace("E:\\", "/Users/konradsbuss/Documents/Uni/bak/dataset/")
-            midi_file_path = midi_file_path.replace("\\", "/")
             midi_file_path = midi_file_path.rstrip()
 
             cmp_k_notes = get_notes_chords_rests(c.KEYBOARD_INSTRUMENTS, midi_file_path, cmp_k_notes)
